@@ -1,5 +1,4 @@
 import requests
-from pprint import pprint
 import datetime
 
 class Weather:
@@ -27,11 +26,11 @@ class Weather:
 
 class WeatherDataCollector:
 
-    __api_key = "4d382de40de2b645998c8ab0095e917c"
-    __units = "metric"
+    _api_key = "4d382de40de2b645998c8ab0095e917c"
+    _units = "metric"
     
-    __actual_weather_data = None
-    __forecast_data = None
+    _actual_weather_data = None
+    _forecast_data = None
 
     def __init__(self, city):
         self._city = city
@@ -43,17 +42,34 @@ class WeatherDataCollector:
     def city(self): return self._city
 
     @property
-    def api_key(self): return self.__api_key
+    def api_key(self): return self._api_key
 
     @property
-    def units(self): return self.__units
+    def units(self): return self._units
+
+    @property
+    def actual_weather_data(self): return self._actual_weather_data
+
+    @actual_weather_data.setter
+    def actual_weather_data(self, value): self._actual_weather_data = value
+
+    @property
+    def forecast_data(self): return self._forecast_data
+
+    @forecast_data.setter
+    def forecast_data(self,value): self._forecast_data = value
 
 
     def collect_actual_weather_data(self):
         weather_data = requests.get(self._actual_weather_url)
 
         if weather_data.status_code == 200:
-            self.__actual_weather_data = weather_data
+
+            self.actual_weather_data = [
+                weather_data.json()["main"]["temp"],
+                weather_data.json()["main"]["feels_like"],
+                weather_data.json()["weather"][0]["main"]
+            ]
 
         elif weather_data.status_code == 401:
             print("Unauthorized entrence")
@@ -62,30 +78,43 @@ class WeatherDataCollector:
             print("The page was not found :-/")
 
     def collect_forecast_data(self):
-        forecast_data = requests.get(self._forecast_url)
-
-        """
-        forecast_temp = []
+        whole_forecast_data = requests.get(self._forecast_url)
+        computational_forecast_data = []
         
-        if forecast_data.status_code == 200:
-            for i in forecast_data.json()["list"]:
-                #forecast_temp.append(datetime.datetime.fromtimestamp(i["dt"]), "|", i["main"]["temp"], "|", i["weather"]) 
-                forecast_temp.append(datetime.datetime.fromtimestamp(i["dt"]))
-            return forecast_temp
+        if whole_forecast_data.status_code == 200:
+            for i in whole_forecast_data.json()["list"]:
+                computational_forecast_data.append([datetime.datetime.fromtimestamp(i["dt"]),
+                                      i["main"]["temp"],
+                                      i["weather"][0]["icon"]])
 
-        elif forecast_data.status_code == 401:
+            required_forecast_data = self.get_average_temp(computational_forecast_data)
+            self.forecast_data = computational_forecast_data #TODO: 2 - Sem pøijdou required_forecast_data
+
+        elif whole_forecast_data.status_code == 401:
             print("Unauthorized entrence")
 
-        elif forecast_data.status_code == 404:
-            print("The page was not found :-/")    
-        """
+        elif whole_forecast_data.status_code == 404:
+            print("The page was not found :-/")   
+            
+    def get_average_temp(self,whole_forecast):
+        # TODO: 1 - vypoèítat prùmìry noèní/denní teploty
+        # prùmìrná denní teplota: (T7 + T14 + 2xT21)/4
+        # prùmìrná noèní teplota: (souèet teplot v rozmezí 22 - 06 a vydìlit jejich poètem)
+        pass
 
 if __name__ == "__main__":
     city = input("In what city do you want to know a weather? ")
 
     weather_collect = WeatherDataCollector(city)
-    weather = Weather(weather_collect.collect_actual_weather(), 0, "shitty", weather_collect.collect_forecast_data())
+    weather_collect.collect_actual_weather_data()
+    weather_collect.collect_forecast_data()
+
+    weather = Weather(
+        weather_collect.actual_weather_data[0],
+        weather_collect.actual_weather_data[1],
+        weather_collect.actual_weather_data[2],
+        weather_collect.forecast_data)
 
     print(weather)
-    for i in weather.forecast:
-        print(i)
+    for forecast in weather.forecast:
+        print(forecast)
