@@ -1,5 +1,5 @@
-import requests
-import datetime
+ï»¿import requests
+from datetime import datetime
 
 class Weather:
     def __init__(self, actual_temp, feel_temp, weather_condition, forecast):
@@ -82,25 +82,79 @@ class WeatherDataCollector:
         computational_forecast_data = []
         
         if whole_forecast_data.status_code == 200:
-            for i in whole_forecast_data.json()["list"]:
-                computational_forecast_data.append([datetime.datetime.fromtimestamp(i["dt"]),
-                                      i["main"]["temp"],
-                                      i["weather"][0]["icon"]])
+            for hourly_weather_data in whole_forecast_data.json()["list"]:
+                computational_forecast_data.append(
+                    [hourly_weather_data["dt_txt"].strip(),
+                     hourly_weather_data["main"]["temp"],
+                     hourly_weather_data["weather"][0]["icon"]]
+                    )
 
-            required_forecast_data = self.get_average_temp(computational_forecast_data)
-            self.forecast_data = computational_forecast_data #TODO: 2 - Sem pøijdou required_forecast_data
+            self.forecast_data = self.get_max_min_temps(computational_forecast_data)
 
         elif whole_forecast_data.status_code == 401:
             print("Unauthorized entrence")
 
         elif whole_forecast_data.status_code == 404:
-            print("The page was not found :-/")   
+            print("The page was not found :-/") 
             
-    def get_average_temp(self,whole_forecast):
-        # TODO: 1 - vypoèítat prùmìry noèní/denní teploty
-        # prùmìrná denní teplota: (T7 + T14 + 2xT21)/4
-        # prùmìrná noèní teplota: (souèet teplot v rozmezí 22 - 06 a vydìlit jejich poètem)
-        pass
+    def get_max_min_temps(self,whole_forecast):
+        daily_max_min_temps = []
+        max_daily_temps = self.get_max_daily_temps(whole_forecast)
+        min_daily_temps = self.get_min_daily_temps(whole_forecast)
+        
+        #TODO: Umistit max/min denni  teploty s indexy ikon do listu daily_max_min_temps a seradit dle data
+
+        return daily_max_min_temps
+
+    def get_max_daily_temps(self, whole_forecast):
+        daily_max_temps = []
+        max_temp_weather = [whole_forecast[0][1], whole_forecast[0][2]]
+        day = whole_forecast[0][0][:10]
+
+        for hourly_data in whole_forecast:
+            if hourly_data[0][:10] == day:
+                if max_temp_weather[0] < hourly_data[1]:
+                    max_temp_weather = [hourly_data[1], hourly_data[2]]      
+            else:
+                daily_max_temps.append(
+                    [day,
+                    max_temp_weather[0],
+                    max_temp_weather[1]
+                    ])
+                day = hourly_data[0][:10]
+                max_temp_weather = [hourly_data[1], hourly_data[2]]
+
+        daily_max_temps = self.date_check(daily_max_temps)
+
+        return daily_max_temps
+
+    def get_min_daily_temps(self, whole_forecast):
+        daily_min_temps = []
+        min_temp_weather = [whole_forecast[0][1], whole_forecast[0][2]]
+        day = whole_forecast[0][0][:10]
+
+        for hourly_data in whole_forecast:
+            if hourly_data[0][:10] == day:
+                if min_temp_weather[0] > hourly_data[1]:
+                    min_temp_weather = [hourly_data[1], hourly_data[2]]
+            else:
+                daily_min_temps.append(
+                    [day,
+                    min_temp_weather[0],
+                    min_temp_weather[1]
+                    ])
+                day = hourly_data[0][:10]
+                min_temp_weather = [hourly_data[1], hourly_data[2]]
+
+        daily_min_temps = self.date_check(daily_min_temps)
+
+        return daily_min_temps
+
+    def date_check(self, weather_data):
+        if weather_data[0][0] == datetime.today().strftime("%Y-%m-%d"):
+            weather_data.pop(0)
+        return weather_data
+    
 
 if __name__ == "__main__":
     city = input("In what city do you want to know a weather? ")
@@ -116,5 +170,3 @@ if __name__ == "__main__":
         weather_collect.forecast_data)
 
     print(weather)
-    for forecast in weather.forecast:
-        print(forecast)
