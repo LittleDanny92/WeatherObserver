@@ -1,135 +1,92 @@
 from PyQt5 import (
     QtWidgets,
-    QtCore,
-    QtGui
-    )
+    QtCore
+)
 
 from center import center
-
-from weather import Weather
-from weatherdatacollector import WeatherDataCollector
+from pdf2image import convert_from_path
 
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("WeatherObserver")
-        self.setFixedSize(450,600)
+        self.setWindowTitle("PDF2JPG")
+        self.setFixedSize(400,150)
         center(self.frameGeometry())
 
         self.init_gui()
 
     def init_gui(self):
-
+        
         main = QtWidgets.QWidget()
-        main_layout = QtWidgets.QVBoxLayout()
-        main.setLayout(main_layout)
-
-        location_layout = QtWidgets.QHBoxLayout()
-        actual_weather_layout = QtWidgets.QHBoxLayout()
-        actual_temp_layout = QtWidgets.QHBoxLayout()
-        feels_like_layout = QtWidgets.QHBoxLayout()
-
-        forecast_layout = QtWidgets.QHBoxLayout()
-        day_one_layout = QtWidgets.QVBoxLayout()
-        day_two_layout = QtWidgets.QVBoxLayout()
-        day_three_layout = QtWidgets.QVBoxLayout()
-        day_four_layout = QtWidgets.QVBoxLayout()
-
-
-
-        main_layout.addStretch()
-        
-        main_layout.addLayout(location_layout)
-        main_layout.addLayout(actual_weather_layout)
-        main_layout.addLayout(actual_temp_layout)
-        main_layout.addLayout(feels_like_layout)
-
-        main_layout.addLayout(forecast_layout)
-        
-        main_layout.addStretch()
-
-        self.location_label = QtWidgets.QLabel("Brno", self)
-        self.location_label.setFont(QtGui.QFont("Arial", 20))
-        self.location_label.setFixedSize(400,75)
-        self.location_label.setAlignment(QtCore.Qt.AlignCenter)
-        location_layout.addWidget(self.location_label)
-
-        self.actual_weather_icon_label = QtWidgets.QLabel("", self)
-        self.actual_weather_icon_label.setFixedSize(400,75)
-        self.actual_weather_icon_label.setAlignment(QtCore.Qt.AlignCenter)
-        actual_weather_layout.addWidget(self.actual_weather_icon_label)
-
-        self.actual_temp_label = QtWidgets.QLabel("-.- °C", self)
-        self.actual_temp_label.setFont(QtGui.QFont("Arial", 16))
-        self.actual_temp_label.setFixedSize(400,75)
-        self.actual_temp_label.setAlignment(QtCore.Qt.AlignCenter)
-        actual_temp_layout.addWidget(self.actual_temp_label)
-
-        self.feels_like_label = QtWidgets.QLabel("Feels like:  -.- °C", self)
-        self.feels_like_label.setFont(QtGui.QFont("Arial", 12))
-        self.feels_like_label.setFixedSize(400,75)
-        self.feels_like_label.setAlignment(QtCore.Qt.AlignHCenter)
-        feels_like_layout.addWidget(self.feels_like_label)
-        
-
-        self.day_one_label = QtWidgets.QLabel("Day1", self)
-        self.day_one_label.setFont(QtGui.QFont("Arial", 16))
-        self.day_one_label.setAlignment(QtCore.Qt.AlignCenter)
-        day_one_layout.addWidget(self.day_one_label)
-        self.day_one_icon_label = QtWidgets.QLabel("icon", self)
-        day_one_layout.addWidget(self.day_one_icon_label)
-
-        forecast_layout.addLayout(day_one_layout)
-
-        self.day_two_label = QtWidgets.QLabel("Day2", self)
-        self.day_two_label.setFont(QtGui.QFont("Arial", 16))
-        self.day_two_label.setAlignment(QtCore.Qt.AlignCenter)
-        day_two_layout.addWidget(self.day_two_label)
-        self.day_two_icon_label = QtWidgets.QLabel("icon", self)
-        day_two_layout.addWidget(self.day_two_icon_label)
-
-        forecast_layout.addLayout(day_two_layout)
-
-        self.day_three_label = QtWidgets.QLabel("Day3", self)
-        self.day_three_label.setFont(QtGui.QFont("Arial", 16))
-        self.day_three_label.setAlignment(QtCore.Qt.AlignCenter)
-        day_three_layout.addWidget(self.day_three_label)
-        self.day_three_icon_label = QtWidgets.QLabel("icon", self)
-        day_three_layout.addWidget(self.day_three_icon_label)
-
-        forecast_layout.addLayout(day_three_layout)
-
-        self.day_four_label = QtWidgets.QLabel("Day4", self)
-        self.day_four_label.setFont(QtGui.QFont("Arial", 16))
-        self.day_four_label.setAlignment(QtCore.Qt.AlignCenter)
-        day_four_layout.addWidget(self.day_four_label)
-        self.day_four_icon_label = QtWidgets.QLabel("icon", self)
-        day_four_layout.addWidget(self.day_four_icon_label)
-
-        forecast_layout.addLayout(day_four_layout)
-
+        grid = QtWidgets.QGridLayout()
+        main.setLayout(grid)
         self.setCentralWidget(main)
 
-        # Create actions and menu bar
-        newAction = QtWidgets.QAction('&Create New Forecast', self)        
-        newAction.setShortcut('Ctrl+n')
-        newAction.setStatusTip('Create Forecast')
-        newAction.triggered.connect(self.show_forecast)
+        grid.setSpacing(15)
 
-        exitAction = QtWidgets.QAction('&Exit', self)        
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
-        exitAction.triggered.connect(self.exit_program)
+        self.find_pdf_button = QtWidgets.QPushButton("PDF to convert:")
+        self.find_pdf_button.setFixedSize(100,40)
+        grid.addWidget(self.find_pdf_button, 0,0,1,2, QtCore.Qt.AlignLeft)
 
-        menuBar = self.menuBar()
-        fileMenu = menuBar.addMenu('&File')
-        fileMenu.addAction(newAction)
-        fileMenu.addAction(exitAction)
+        self.pdf_path_edit = QtWidgets.QLineEdit()
+        self.pdf_path_edit.setMaxLength(200)
+        self.pdf_path_edit.setFixedHeight(40)
+        grid.addWidget(self.pdf_path_edit, 0,2,1,3)
 
-    def show_forecast(self):
-        pass
+        self.convert_pdf_button = QtWidgets.QPushButton("Convert PDF")
+        self.convert_pdf_button.setFixedSize(100,40)
+        grid.addWidget(self.convert_pdf_button, 1,0,1,2)
 
-    def exit_program(self):
-        pass
+        self.form_reset_button = QtWidgets.QPushButton("Reset the form")
+        self.form_reset_button.setFixedSize(100,40)
+        grid.addWidget(self.form_reset_button, 1,2,1,2)
+
+        self.find_pdf_button.clicked.connect(self.find_pdf)
+        self.convert_pdf_button.clicked.connect(self.execute_convertion)
+        self.form_reset_button.clicked.connect(self.reset_form)
+
+        self.error_msg_box = QtWidgets.QMessageBox()
+        self.error_msg_box.setWindowTitle("Error")
+        self.error_msg_box.setIcon(QtWidgets.QMessageBox.Warning)
+
+        self.info_msg_box = QtWidgets.QMessageBox()
+        self.info_msg_box.setWindowTitle("Information")
+        self.info_msg_box.setIcon(QtWidgets.QMessageBox.Information)
+
+    def find_pdf(self):
+        file_dialog = QtWidgets.QFileDialog()
+        file_path, _ = file_dialog.getOpenFileName(self,"Open File", "", "PDF (*.pdf);; All Files (*)")
+
+        if file_path:
+            self.pdf_path_edit.setText(file_path)
+        
+    def convert_pdf(self, pdf_path):
+        return convert_from_path(pdf_path, fmt = "jpg")
+
+    def execute_convertion(self):
+        if self.pdf_path_edit.text().endswith(".pdf"):
+            try:
+                jpg_images = self.convert_pdf(self.pdf_path_edit.text())
+                self.save_jpg(jpg_images)
+            except:
+                self.error_msg_box.setText("The creation of JPG failed.")
+                self.error_msg_box.exec()
+            else:
+                self.info_msg_box.setText("The PDF was successfully converted.")
+                self.info_msg_box.exec()
+        else:
+            self.info_msg_box.setText("The PDF file was not chosen.")
+            self.info_msg_box.exec()
+    
+    def save_jpg(self, jpgs):
+        file_dialog = QtWidgets.QFileDialog()
+        file_path, _ = file_dialog.getSaveFileName(self,"Save jpg File", "", "Images (*.jpg);; All Files (*)")
+        if file_path:
+            file_path = file_path.rstrip(".jpg")
+            for i,jpg in enumerate(jpgs):
+                jpg.save(f"{file_path}_{i+1}.jpg")            
+    
+    def reset_form(self):
+        self.pdf_path_edit.clear()
