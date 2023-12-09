@@ -13,7 +13,6 @@ from weather import Weather
 from weatherdatacollector import WeatherDataCollector
 
 
-
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -31,12 +30,20 @@ class MainWindow(QtWidgets.QMainWindow):
         main_layout = QtWidgets.QVBoxLayout()
         main.setLayout(main_layout)
 
-        location_layout = QtWidgets.QHBoxLayout()
-        actual_weather_layout = QtWidgets.QHBoxLayout()
-        actual_temp_layout = QtWidgets.QHBoxLayout()
-        feels_like_layout = QtWidgets.QHBoxLayout()
+        actual_weather_region = QtWidgets.QWidget()
+        actual_weather_region.setFixedSize(320,350)
+        actual_weather_region.setStyleSheet(
+            "background-color: #2554C7; color:#BDEDFF; border-radius: 20px;"
+            )
 
-        forecast_layout = QtWidgets.QHBoxLayout()
+        actual_weather_layout = QtWidgets.QVBoxLayout(actual_weather_region)
+
+        forecast_region = QtWidgets.QWidget()
+        forecast_region.setStyleSheet(
+            "background-color: #2554C7; color:#BDEDFF; border-radius: 20px;"
+            )
+
+        forecast_layout = QtWidgets.QHBoxLayout(forecast_region)
         day_one_layout = QtWidgets.QVBoxLayout()
         day_two_layout = QtWidgets.QVBoxLayout()
         day_three_layout = QtWidgets.QVBoxLayout()
@@ -46,137 +53,131 @@ class MainWindow(QtWidgets.QMainWindow):
         day_two_icon_layout = QtWidgets.QHBoxLayout()
         day_three_icon_layout = QtWidgets.QHBoxLayout()
         day_four_icon_layout = QtWidgets.QHBoxLayout()
-
+               
         info_layout = QtWidgets.QHBoxLayout()
 
+        main_layout.addWidget(actual_weather_region,alignment=QtCore.Qt.AlignCenter)
         main_layout.addStretch()
-        
-        main_layout.addLayout(location_layout)
-        main_layout.addLayout(actual_weather_layout)
-        main_layout.addLayout(actual_temp_layout)
-        main_layout.addLayout(feels_like_layout)
-
-        main_layout.addLayout(forecast_layout)
+        main_layout.addWidget(forecast_region,alignment=QtCore.Qt.AlignCenter)
 
         main_layout.addStretch()
 
         main_layout.addLayout(info_layout)
 
-        self.location_label = QtWidgets.QLabel("", self)
-        self.location_label.setFont(QtGui.QFont("Arial", 20))
-        self.location_label.setFixedSize(400,75)
+        self.location_label = QtWidgets.QLabel("")
+        self.location_label.setFont(QtGui.QFont("Arial",20))
+        self.location_label.setFixedSize(300,75)
         self.location_label.setAlignment(QtCore.Qt.AlignCenter)
-        location_layout.addWidget(self.location_label)
+        actual_weather_layout.addWidget(self.location_label)
 
-        self.actual_weather_icon_label = QtWidgets.QLabel(self)
-        self.actual_weather_icon_label.setFixedSize(400,75)
+        self.actual_weather_icon_label = QtWidgets.QLabel()
+        self.actual_weather_icon_label.setFixedSize(300,75)
         self.actual_weather_icon_label.setAlignment(QtCore.Qt.AlignCenter)
         actual_weather_layout.addWidget(self.actual_weather_icon_label)
 
-        self.actual_temp_label = QtWidgets.QLabel("-.- °C", self)
-        self.actual_temp_label.setFont(QtGui.QFont("Arial", 16))
-        self.actual_temp_label.setFixedSize(400,75)
+        self.actual_temp_label = QtWidgets.QLabel("-.- °C")
+        self.actual_temp_label.setFont(QtGui.QFont("Arial",16))
+        self.actual_temp_label.setFixedSize(300,75)
         self.actual_temp_label.setAlignment(QtCore.Qt.AlignCenter)
-        actual_temp_layout.addWidget(self.actual_temp_label)
+        actual_weather_layout.addWidget(self.actual_temp_label)
 
-        self.feels_like_label = QtWidgets.QLabel("Feels like:  -.- °C", self)
-        self.feels_like_label.setFont(QtGui.QFont("Arial", 12))
-        self.feels_like_label.setFixedSize(400,75)
+        self.feels_like_label = QtWidgets.QLabel("Feels like:  -.- °C")
+        self.feels_like_label.setFont(QtGui.QFont("Arial",12))
+        self.feels_like_label.setFixedSize(300,75)
         self.feels_like_label.setAlignment(QtCore.Qt.AlignHCenter)
-        feels_like_layout.addWidget(self.feels_like_label)
-        
+        actual_weather_layout.addWidget(self.feels_like_label)
 
-        self.day_one_label = QtWidgets.QLabel("", self)
+        self.day_one_label = QtWidgets.QLabel("")
         self.day_one_label.setFixedSize(150,50)
-        self.day_one_label.setFont(QtGui.QFont("Arial", 14))
+        self.day_one_label.setFont(QtGui.QFont("Arial",14))
         self.day_one_label.setAlignment(QtCore.Qt.AlignCenter)
         day_one_layout.addWidget(self.day_one_label)
 
-        self.day_one_icon_max_label = QtWidgets.QLabel("", self)
+        self.day_one_icon_max_label = QtWidgets.QLabel("")
         self.day_one_icon_max_label.setFixedSize(50,50)
         self.day_one_icon_max_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.day_one_icon_min_label = QtWidgets.QLabel("", self)
+        self.day_one_icon_min_label = QtWidgets.QLabel("")
         self.day_one_icon_min_label.setFixedSize(50,50)
         self.day_one_icon_min_label.setAlignment(QtCore.Qt.AlignCenter)
         day_one_icon_layout.addWidget(self.day_one_icon_max_label)
         day_one_icon_layout.addWidget(self.day_one_icon_min_label)
         day_one_layout.addLayout(day_one_icon_layout)
 
-        self.day_one_temp_label = QtWidgets.QLabel("-.- °C/-.- °C", self)
+        self.day_one_temp_label = QtWidgets.QLabel("-.- °C/-.- °C")
         self.day_one_temp_label.setFixedSize(150,50)
-        self.day_one_temp_label.setFont(QtGui.QFont("Arial", 11))
+        self.day_one_temp_label.setFont(QtGui.QFont("Arial",11))
         self.day_one_temp_label.setAlignment(QtCore.Qt.AlignCenter)
         day_one_layout.addWidget(self.day_one_temp_label)
         
         forecast_layout.addLayout(day_one_layout)
 
-        self.day_two_label = QtWidgets.QLabel("", self)
+        self.day_two_label = QtWidgets.QLabel("")
         self.day_two_label.setFixedSize(150,50)
-        self.day_two_label.setFont(QtGui.QFont("Arial", 14))
+        self.day_two_label.setFont(QtGui.QFont("Arial",14))
         self.day_two_label.setAlignment(QtCore.Qt.AlignCenter)
         day_two_layout.addWidget(self.day_two_label)
 
-        self.day_two_icon_max_label = QtWidgets.QLabel("", self)
+        self.day_two_icon_max_label = QtWidgets.QLabel("")
         self.day_two_icon_max_label.setFixedSize(50,50)
         self.day_two_icon_max_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.day_two_icon_min_label = QtWidgets.QLabel("", self)
+        self.day_two_icon_min_label = QtWidgets.QLabel("")
         self.day_two_icon_min_label.setFixedSize(50,50)
         self.day_two_icon_min_label.setAlignment(QtCore.Qt.AlignCenter)
         day_two_icon_layout.addWidget(self.day_two_icon_max_label)
         day_two_icon_layout.addWidget(self.day_two_icon_min_label)
         day_two_layout.addLayout(day_two_icon_layout)
 
-        self.day_two_temp_label = QtWidgets.QLabel("-.- °C/-.- °C", self)
+        self.day_two_temp_label = QtWidgets.QLabel("-.- °C/-.- °C")
         self.day_two_temp_label.setFixedSize(150,50)
-        self.day_two_temp_label.setFont(QtGui.QFont("Arial", 11))
+        self.day_two_temp_label.setFont(QtGui.QFont("Arial",11))
         self.day_two_temp_label.setAlignment(QtCore.Qt.AlignCenter)
         day_two_layout.addWidget(self.day_two_temp_label)
 
         forecast_layout.addLayout(day_two_layout)
 
-        self.day_three_label = QtWidgets.QLabel("", self)
+        self.day_three_label = QtWidgets.QLabel("")
         self.day_three_label.setFixedSize(150,50)
-        self.day_three_label.setFont(QtGui.QFont("Arial", 14))
+        self.day_three_label.setFont(QtGui.QFont("Arial",14))
         self.day_three_label.setAlignment(QtCore.Qt.AlignCenter)
         day_three_layout.addWidget(self.day_three_label)
 
-        self.day_three_icon_max_label = QtWidgets.QLabel("", self)
+        self.day_three_icon_max_label = QtWidgets.QLabel("")
         self.day_three_icon_max_label.setFixedSize(50,50)
         self.day_three_icon_max_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.day_three_icon_min_label = QtWidgets.QLabel("", self)
+        self.day_three_icon_min_label = QtWidgets.QLabel("")
         self.day_three_icon_min_label.setFixedSize(50,50)
         self.day_three_icon_min_label.setAlignment(QtCore.Qt.AlignCenter)
         day_three_icon_layout.addWidget(self.day_three_icon_max_label)
         day_three_icon_layout.addWidget(self.day_three_icon_min_label)
         day_three_layout.addLayout(day_three_icon_layout)
 
-        self.day_three_temp_label = QtWidgets.QLabel("-.- °C/-.- °C", self)
+        self.day_three_temp_label = QtWidgets.QLabel("-.- °C/-.- °C")
         self.day_three_temp_label.setFixedSize(150,50)
-        self.day_three_temp_label.setFont(QtGui.QFont("Arial", 11))
+        self.day_three_temp_label.setFont(QtGui.QFont("Arial",11))
         self.day_three_temp_label.setAlignment(QtCore.Qt.AlignCenter)
         day_three_layout.addWidget(self.day_three_temp_label)
 
         forecast_layout.addLayout(day_three_layout)
 
-        self.day_four_label = QtWidgets.QLabel("", self)
+        self.day_four_label = QtWidgets.QLabel("")
         self.day_four_label.setFixedSize(150,50)
-        self.day_four_label.setFont(QtGui.QFont("Arial", 14))
+        self.day_four_label.setFont(QtGui.QFont("Arial",14))
         self.day_four_label.setAlignment(QtCore.Qt.AlignCenter)
         day_four_layout.addWidget(self.day_four_label)
 
-        self.day_four_icon_max_label = QtWidgets.QLabel("", self)
+        self.day_four_icon_max_label = QtWidgets.QLabel("")
         self.day_four_icon_max_label.setFixedSize(50,50)
         self.day_four_icon_max_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.day_four_icon_min_label = QtWidgets.QLabel("", self)
+        self.day_four_icon_min_label = QtWidgets.QLabel("")
         self.day_four_icon_min_label.setFixedSize(50,50)
         self.day_four_icon_min_label.setAlignment(QtCore.Qt.AlignCenter)
         day_four_icon_layout.addWidget(self.day_four_icon_max_label)
         day_four_icon_layout.addWidget(self.day_four_icon_min_label)
         day_four_layout.addLayout(day_four_icon_layout)
 
-        self.day_four_temp_label = QtWidgets.QLabel("-.- °C/-.- °C", self)
+        self.day_four_temp_label = QtWidgets.QLabel("-.- °C/-.- °C")
         self.day_four_temp_label.setFixedSize(150,50)
-        self.day_four_temp_label.setFont(QtGui.QFont("Arial", 11))
+        self.day_four_temp_label.setFont(QtGui.QFont("Arial",11))
         self.day_four_temp_label.setAlignment(QtCore.Qt.AlignCenter)
         day_four_layout.addWidget(self.day_four_temp_label)
 
@@ -184,13 +185,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setCentralWidget(main)
 
-        # Create actions and menu bar
-        self.new_action = QtWidgets.QAction('&Create New Forecast', self)        
+        self.new_action = QtWidgets.QAction('&Create New Forecast')        
         self.new_action.setShortcut('Ctrl+n')
         self.new_action.setStatusTip('Create Forecast')
         self.new_action.triggered.connect(self.create_new_forecast)
 
-        self.exit_action = QtWidgets.QAction('&Exit', self)        
+        self.exit_action = QtWidgets.QAction('&Exit')        
         self.exit_action.setShortcut('Ctrl+q')
         self.exit_action.setStatusTip('Exit application')
         self.exit_action.triggered.connect(QtWidgets.qApp.quit)
@@ -200,14 +200,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.file_menu.addAction(self.new_action)
         self.file_menu.addAction(self.exit_action)
 
-        self.creator_name_label = QtWidgets.QLabel("Made by D.H. 2023", self)
-        self.creator_name_label.setFont(QtGui.QFont("Arial", 9))
+        self.creator_name_label = QtWidgets.QLabel("Made by D.H. 2023")
+        self.creator_name_label.setFont(QtGui.QFont("Arial",9))
         self.creator_name_label.setFixedSize(160,25)
         self.creator_name_label.setAlignment(QtCore.Qt.AlignLeft)
         info_layout.addWidget(self.creator_name_label)
 
-        self.data_source_label = QtWidgets.QLabel("Weather data source: openweathermap.org", self)
-        self.data_source_label.setFont(QtGui.QFont("Arial", 10))
+        self.data_source_label = QtWidgets.QLabel("Weather data source: openweathermap.org")
+        self.data_source_label.setFont(QtGui.QFont("Arial",10))
         self.data_source_label.setFixedSize(350,25)
         self.data_source_label.setAlignment(QtCore.Qt.AlignRight)
         info_layout.addWidget(self.data_source_label)
@@ -229,13 +229,10 @@ class MainWindow(QtWidgets.QMainWindow):
             try:
                 self.get_weather(self.get_location_window.get_location())
                 self.show_forecast()
-            #except Exception as err:
-             #   print(f"HTTP error occurred: {err}")
-            except:
-                self.info_msg_box.setText("Something horrible happened! Maybe You didnt write the location?")
+            except Exception as err:
+                self.info_msg_box.setText(f"{err}")
                 self.info_msg_box.exec()
             
-
     def show_forecast(self):
 
         self.location_label.setText(self.weather_data_collector.city)
