@@ -103,7 +103,7 @@ class MainWindow(QtWidgets.QMainWindow):
         day_one_icon_layout.addWidget(self.day_one_icon_min_label)
         day_one_layout.addLayout(day_one_icon_layout)
 
-        self.day_one_temp_label = QtWidgets.QLabel("-.- °C/-.- °C")
+        self.day_one_temp_label = QtWidgets.QLabel("-.- °C | -.- °C")
         self.day_one_temp_label.setFixedSize(150,50)
         self.day_one_temp_label.setFont(QtGui.QFont("Arial",11))
         self.day_one_temp_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -127,7 +127,7 @@ class MainWindow(QtWidgets.QMainWindow):
         day_two_icon_layout.addWidget(self.day_two_icon_min_label)
         day_two_layout.addLayout(day_two_icon_layout)
 
-        self.day_two_temp_label = QtWidgets.QLabel("-.- °C/-.- °C")
+        self.day_two_temp_label = QtWidgets.QLabel("-.- °C | -.- °C")
         self.day_two_temp_label.setFixedSize(150,50)
         self.day_two_temp_label.setFont(QtGui.QFont("Arial",11))
         self.day_two_temp_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -151,7 +151,7 @@ class MainWindow(QtWidgets.QMainWindow):
         day_three_icon_layout.addWidget(self.day_three_icon_min_label)
         day_three_layout.addLayout(day_three_icon_layout)
 
-        self.day_three_temp_label = QtWidgets.QLabel("-.- °C/-.- °C")
+        self.day_three_temp_label = QtWidgets.QLabel("-.- °C | -.- °C")
         self.day_three_temp_label.setFixedSize(150,50)
         self.day_three_temp_label.setFont(QtGui.QFont("Arial",11))
         self.day_three_temp_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -175,7 +175,7 @@ class MainWindow(QtWidgets.QMainWindow):
         day_four_icon_layout.addWidget(self.day_four_icon_min_label)
         day_four_layout.addLayout(day_four_icon_layout)
 
-        self.day_four_temp_label = QtWidgets.QLabel("-.- °C/-.- °C")
+        self.day_four_temp_label = QtWidgets.QLabel("-.- °C | -.- °C")
         self.day_four_temp_label.setFixedSize(150,50)
         self.day_four_temp_label.setFont(QtGui.QFont("Arial",11))
         self.day_four_temp_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -250,7 +250,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QtGui.QPixmap(f"images/{self.weather.forecast[0][4]}.png").scaled(40, 40, QtCore.Qt.KeepAspectRatio)
             )
         self.day_one_temp_label.setText(
-            f"{round(self.weather.forecast[0][1],1)} °C/{round(self.weather.forecast[0][3],1)} °C"
+            f"{round(self.weather.forecast[0][1],1)} °C | {round(self.weather.forecast[0][3],1)} °C"
             )
 
         self.day_two_label.setText(f"{self.get_week_day(self.weather.forecast[1][0])}")
@@ -261,7 +261,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QtGui.QPixmap(f"images/{self.weather.forecast[1][4]}.png").scaled(40, 40, QtCore.Qt.KeepAspectRatio)
             )
         self.day_two_temp_label.setText(
-            f"{round(self.weather.forecast[1][1],1)} °C/{round(self.weather.forecast[1][3],1)} °C"
+            f"{round(self.weather.forecast[1][1],1)} °C | {round(self.weather.forecast[1][3],1)} °C"
             )
 
         self.day_three_label.setText(f"{self.get_week_day(self.weather.forecast[2][0])}")
@@ -272,7 +272,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QtGui.QPixmap(f"images/{self.weather.forecast[2][4]}.png").scaled(40, 40, QtCore.Qt.KeepAspectRatio)
             )
         self.day_three_temp_label.setText(
-            f"{round(self.weather.forecast[2][1],1)} °C/{round(self.weather.forecast[2][3],1)} °C"
+            f"{round(self.weather.forecast[2][1],1)} °C | {round(self.weather.forecast[2][3],1)} °C"
             )
 
         self.day_four_label.setText(f"{self.get_week_day(self.weather.forecast[3][0])}")
@@ -283,7 +283,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QtGui.QPixmap(f"images/{self.weather.forecast[3][4]}.png").scaled(40, 40, QtCore.Qt.KeepAspectRatio)
             )
         self.day_four_temp_label.setText(
-            f"{round(self.weather.forecast[3][1],1)} °C/{round(self.weather.forecast[3][3],1)} °C"
+            f"{round(self.weather.forecast[3][1],1)} °C | {round(self.weather.forecast[3][3],1)} °C"
             )
 
     def get_weather(self,city):
